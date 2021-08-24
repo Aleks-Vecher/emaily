@@ -1,6 +1,7 @@
 const express = require('express')
 const  mongoose = require('mongoose')
 const keys = require('./config/keys')
+require('./models/User')  // this has to be upper then './services/passport' to be avoid error because first we creat schema'Schema hasn't been registered for model "users"'and [nodemon] app crashed - waiting for file changes before starting...
 require('./services/passport')
 
 
