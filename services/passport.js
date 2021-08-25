@@ -5,9 +5,16 @@ const mongoose = require('mongoose')
 
 const User = mongoose.model('users') // pull schema from mongoose with one argument . This is model class
 
-passport.serializeUser((user, done) => {  // user is same as existingUser (model user)
+passport.serializeUser((user, done) => {  // user is same as existingUser (mongoose model user)
   done(null, user.id)  // this is not as profile id, this id generated automatically by Mongo
   // this is the shortcut to reference the Mongo ID, we do not have to look at underscore ID, dot, dollar sign and so on
+})
+
+passport.deserializeUser((id, done) => {
+  User.findById(id)
+      .then(user => {
+        done(null, user)
+      })
 })
 
 passport.use(new GoogleStrategy({
