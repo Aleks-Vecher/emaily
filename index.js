@@ -2,6 +2,7 @@ const express = require('express')
 const  mongoose = require('mongoose')
 const cookieSession = require('cookie-session')
 const passport = require('passport')
+const bodyParser = require('body-parser')
 const keys = require('./config/keys')
 require('./models/User')  // this has to be upper then './services/passport' to be avoid error because first we creat schema'Schema hasn't been registered for model "users"'and [nodemon] app crashed - waiting for file changes before starting...
 require('./services/passport')
@@ -14,6 +15,10 @@ mongoose.connect(keys.mongoURI, {
 });
 
 const app = express()
+
+app.use(bodyParser.json()) // this middleware uses for parse the body post/put/patch request which come to app. then assign it to the recht body property
+
+
 // these three middlewares works for every incoming request
 //tell passport to use cookies, confige options of cookies
 //middlewares
@@ -30,7 +35,7 @@ app.use(passport.session())
 
 
 require('./routes/authRoutes')(app)
-
+require('./routes/billingRouts')(app)
 //console.developers.google.com
 
 const PORT = process.env.PORT || 5000
