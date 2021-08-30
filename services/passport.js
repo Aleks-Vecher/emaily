@@ -28,10 +28,13 @@ passport.use(new GoogleStrategy({
       if (existingUser) {
         // we already have a record with given profile I
         return done(null, existingUser)
+      }
+
+
         // we don`t have a user record with this ID, make a new record!
         const user = await new User({googleId: profile.id}).save()
         done(null, user)  // both user and new User represent the same model
         //create model instance with needed properties and save to db
-      }
+
     }
 ))
