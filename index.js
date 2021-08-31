@@ -1,5 +1,5 @@
 const express = require('express')
-const  mongoose = require('mongoose')
+const mongoose = require('mongoose')
 const cookieSession = require('cookie-session')
 const passport = require('passport')
 const bodyParser = require('body-parser')
@@ -16,7 +16,7 @@ mongoose.connect(keys.mongoURI, {
 
 const app = express()
 
-app.use(bodyParser.json()) // this middleware uses for parse the body post/put/patch request which come to app. then assign it to the recht body property
+app.use(bodyParser.json()) // this middleware uses for parse the body post/put/patch request which come to app. then assign it to the req body property
 
 
 // these three middlewares works for every incoming request
@@ -24,7 +24,7 @@ app.use(bodyParser.json()) // this middleware uses for parse the body post/put/p
 //middlewares
 app.use(
     cookieSession({
-maxAge:  30 * 24 * 60 * 60 * 1000,
+      maxAge: 30 * 24 * 60 * 60 * 1000,
       keys: [keys.cookieKey],  // this key uses to encrypt any given cookie
     })
 )
@@ -37,6 +37,19 @@ app.use(passport.session())
 require('./routes/authRoutes')(app)
 require('./routes/billingRouts')(app)
 //console.developers.google.com
+
+if (process.env.NODE_ENV === 'production') {
+  //Express will serve up production assets
+  // like or main.js file, or main.css file!
+  app.use(express.static('client/build'))
+
+  // Express will serve up the index.html file
+  // if it doesn`t recognize the route.
+  const path = require('path')
+  app.get('*', (req, res ) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
+  })
+}
 
 const PORT = process.env.PORT || 5000
 app.listen(PORT, function () {
