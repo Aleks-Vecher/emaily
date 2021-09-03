@@ -8,8 +8,8 @@ import reduxThunk from 'redux-thunk';
 
 import App from './components/App'
 import reducers from './reducers';
-
-
+import axios from 'axios'; // these two lines are temporaly, just for testing with postman
+window.axios = axios
 
 const store = createStore(reducers, {}, applyMiddleware(reduxThunk));
 
