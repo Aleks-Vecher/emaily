@@ -1,24 +1,23 @@
 const keys = require('../config/keys')
-
-const formData = require('form-data');
-const Mailgun = require('mailgun.js');
-const mailgun = new Mailgun(formData);
-const mg = mailgun.client({username: 'api', key: keys.MailGunApiKey || '156db0f1-3f3ed3da'})
+const mailgun = require('mailgun-js')({apiKey: keys.MailGunApiKey, domain: keys.MailGunDomain});
 
 class Mailer {
-  constructor({subject, recipients}, content) {
-    this.from = 'aliaksandr.vechar@itechart-group.com';
+  constructor({ recipients, subject}, content) {
+    this.from = 'aliaksandr.vechar@gmail.com';
     this.to = this.formatAddresses(recipients);
     this.subject = subject;
     this.text = content;
     this.html = content;
+    this.o = 'tracking-clicks';
   }
-  formatAddresses(recipients){
-    return recipients.map(({ email }) => email)
+
+  formatAddresses(recipients) {
+    return recipients.map(({email}) => email)
   }
 }
 
+module.exports = { mailgun, Mailer }
 
-module.exports = mg
-module.exports = Mailer
+
+
 

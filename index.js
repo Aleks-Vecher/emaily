@@ -7,8 +7,7 @@ const keys = require('./config/keys')
 require('./models/User')  // this has to be upper then './services/passport' to be avoid error because first we creat schema'Schema hasn't been registered for model "users"'and [nodemon] app crashed - waiting for file changes before starting...
 require('./models/Survey')
 require('./services/passport')
-const mail = require('./services/Mailer')
-console.log(mail)
+
 mongoose.connect(keys.mongoURI, {
   useNewUrlParser: true,
   // useCreateIndex: true,
@@ -56,6 +55,5 @@ if (process.env.NODE_ENV === 'production') {
 const PORT = process.env.PORT || 5000
 app.listen(PORT, function () {
   console.log('listen on port 5000')
-  console.log(mail.client)
 })
 

@@ -1,16 +1,18 @@
 const mongoose = require('mongoose')
 const requireLogin = require('../middlewares/requireLogin')
 const requireCredits = require('../middlewares/requireCredits')
-const Mailer = require('../services/Mailer')
-// const {combineReducers} = require("redux");
 const surveyTemplate = require('../services/emailTemplates/surveyTemplates')
-const keys = require('../config/keys')
-const mg = require('../services/Mailer')
+const {Mailer, mailgun} = require('../services/Mailer')
+
 
 const Survey = mongoose.model('surveys') // this is an mongoose instance of a survey
 
 module.exports = app => {
-  app.post('/api/surveys', requireLogin, requireCredits, (req, res) => {
+  app.get('/api/surveys/thanks', (req, res) => {
+    res.send('Thanks for voting!')
+  })
+
+  app.post('/api/surveys', requireLogin, requireCredits, async (req, res) => {
     const {title, subject, body, recipients} = req.body
 
     const survey = new Survey({
@@ -25,8 +27,16 @@ module.exports = app => {
     // Great place to send an email
     const mailerData = new Mailer(survey, surveyTemplate(survey))
     try {
-      mg.messages.create(`${keys.MailGunDomain}`, mailerData).then(msg => console.log(m4444))
-    } catch (e){
+      await mailgun.messages().send(mailerData, function (error, body) {
+        console.log(body);
+        if (error) console.log(error);
+      });
+      await survey.save()
+      req.user.credits -= 1;
+      const user = await req.user.save()
+      res.send(user)
+    } catch (e) {
+      res.status(422).send(e) //status mean that something wrong and we send entire message
       console.log(e.message)
     }
   })
