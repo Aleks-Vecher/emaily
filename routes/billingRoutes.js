@@ -11,9 +11,9 @@ module.exports = app => {
       amount: 500,
       currency: 'usd',
       description: '$5 for 5 credits',
-      source: req.body.id  // id of our autharization
-    }) // creating a buld of our credit card
-    req.user.credits += 5    //this is set up autonatically by passport (middlewares passport.initialize and passport.session) . This is User model class
+      source: req.body.id  // id of our authorization
+    }) // creating a build of our credit card
+    req.user.credits += 5    //this is set up automatically by passport (middlewares passport.initialize and passport.session) . This is User model class
     const user = await req.user.save()
 
     res.send(user)
